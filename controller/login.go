@@ -17,3 +17,10 @@ func Register(c echo.Context) error {
 	resData["flag"] = "1"
 	return context.RetData(c, resData)
 }
+
+
+func ChangePassword(c echo.Context) error {
+	resData := map[string]interface{}{}
+	resData["flag"] = "1"
+	return context.RetData(c, resData)
+}

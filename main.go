@@ -11,6 +11,7 @@ func main() {
 	login := e.Group("/login")
 	login.POST("/login", controller.Login)
 	login.POST("/register", controller.Register)
+	login.POST("/password", controller.ChangePassword)
 
 	personal := e.Group("/personal")
 	personal.POST("/information", controller.GetPersonalInformation)
