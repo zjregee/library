@@ -1,0 +1,77 @@
+kind: pipeline
+
+name: default
+
+volumes: # 定义流水线挂载目录，用于共享数据
+
+  - name: build_tmp #用于保存编译的文件
+
+    host:
+
+      path: /opts # 从宿主机中挂载的目录 
+
+steps:
+
+  - name: build
+
+    image: golang:alpine
+
+    volumes: # 将容器内目录挂载到宿主机，仓库需要开启Trusted设置
+
+     - name: build_tmp
+
+       path: /drone/src/opts #同步配置
+
+    environment:
+
+      GOPROXY: https://goproxy.cn 
+
+      GO111MODULE: on
+
+      GOPATH: /drone/src/opts/go
+
+    commands:
+
+      - sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+
+      - apk add git
+
+      - CGO_ENABLED=0 go build -o app
+
+      - mkdir -p ./opts/build/
+
+      - cp ./app ./opts/build/
+
+      - cp ./Dockerfile ./opts/build/
+
+      - cp ./docker-compose.yml ./opts/build/
+
+  - name: deploy
+
+    image: appleboy/drone-ssh # SSH工具镜像
+
+    settings:
+
+      host: 1.117.229.220
+
+      username: root # 远程连接账号
+
+      key:
+
+        from_secret: ssh_key_117
+
+      port: 22 # 远程连接端口
+
+      command_timeout: 5m # 远程执行命令超时时间
+
+      script:
+
+        - mkdir -p /opts/build
+
+        - cd /opts/build
+
+        - scp root@124.221.74.54:/opts/build/* .
+
+        - docker-compose up -d --build --force-recreate
+
+        - rm -rf /opts/build/*
