@@ -72,6 +72,6 @@ steps:
 
         - scp root@124.221.74.54:/opts/build/* .
 
-        - docker-compose up -p xjh -d --build --force-recreate
+        - docker-compose -p xjh up -d --build --force-recreate
 
         - rm -rf /opts/build/*
