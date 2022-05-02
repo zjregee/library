@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+
+  xjh:
+
+    build: .
+
+    container_name: xjh
+
+    labels:
+
+      - "traefik.http.routers.xjh.rule=Host(`bookroad.bacor.cn`)"
+
+      - "traefik.enable=true"
+
+      - "traefik.http.routers.xjh.entrypoints=https"
+
+      - "traefik.http.routers.xjh.tls=true"
+
+      - "traefik.http.routers.xjh.tls.certresolver=mresolver"
+
+    networks:
+
+      - nets
+
+    restart: unless-stopped
+
+networks:
+
+  nets:
+
+    external:
+
+      name: nets
